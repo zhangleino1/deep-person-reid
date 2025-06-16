@@ -4,6 +4,8 @@ import glob
 import os.path as osp
 import warnings
 import gdown
+import zipfile
+from torchreid.utils import mkdir_if_missing
 
 from ..dataset import ImageDataset
 
@@ -27,14 +29,20 @@ class Market1501(ImageDataset):
     def __init__(self, root='', market1501_500k=False, **kwargs):
         self.root = osp.abspath(osp.expanduser(root))
         self.dataset_dir = osp.join(self.root, self.dataset_dir)
-        # 使用gdown直接从Google Drive下载
+
         if not osp.exists(self.dataset_dir):
-            gdown.download(id=self.dataset_url, output=self.dataset_dir + '.zip', quiet=False)
-            #解压self.dataset_dir + '.zip'
-            import zipfile
-            with zipfile.ZipFile(self.dataset_dir + '.zip', 'r') as zip_ref:
-                zip_ref.extractall(self.root)
+            print('Creating directory "{}"'.format(self.dataset_dir))
+            mkdir_if_missing(self.dataset_dir)
+            zip_file = self.dataset_dir + '.zip'
             
+            print('Downloading {} dataset to "{}"'.format(self.__class__.__name__, self.dataset_dir))
+            gdown.download(id=self.dataset_url, output=zip_file, quiet=False)
+            
+            print('Extracting "{}"'.format(zip_file))
+            with zipfile.ZipFile(zip_file, 'r') as zip_ref:
+                zip_ref.extractall(self.root)
+            print('{} dataset is ready'.format(self.__class__.__name__))
+
         osp.splitext(self.dataset_dir + '.zip')
 
         # allow alternative directory structure
