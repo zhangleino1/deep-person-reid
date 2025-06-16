@@ -23,7 +23,7 @@ class Market1501(ImageDataset):
         - images: 12936 (train) + 3368 (query) + 15913 (gallery).
     """
     _junk_pids = [0, -1]
-    dataset_dir = 'market1501'
+    dataset_dir = 'Market-1501-v15.09.15'
     dataset_url = '0B8-rUzbwVRk0c054eEozWG9COHM'
 
     def __init__(self, root='', market1501_500k=False, **kwargs):
