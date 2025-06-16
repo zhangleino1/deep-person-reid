@@ -3,6 +3,7 @@ import re
 import glob
 import os.path as osp
 import warnings
+import gdown
 
 from ..dataset import ImageDataset
 
@@ -21,12 +22,15 @@ class Market1501(ImageDataset):
     """
     _junk_pids = [0, -1]
     dataset_dir = 'market1501'
-    dataset_url = 'https://drive.google.com/file/d/0B8-rUzbwVRk0c054eEozWG9COHM/view'
+    dataset_url = '0B8-rUzbwVRk0c054eEozWG9COHM'
 
     def __init__(self, root='', market1501_500k=False, **kwargs):
         self.root = osp.abspath(osp.expanduser(root))
         self.dataset_dir = osp.join(self.root, self.dataset_dir)
-        self.download_dataset(self.dataset_dir, self.dataset_url)
+        # 使用gdown直接从Google Drive下载
+        if not osp.exists(self.dataset_dir):
+            gdown.download(id=self.dataset_url, output=self.dataset_dir + '.zip', quiet=False)
+        osp.splitext(self.dataset_dir + '.zip')
 
         # allow alternative directory structure
         self.data_dir = self.dataset_dir
