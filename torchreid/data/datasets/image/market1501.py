@@ -30,6 +30,11 @@ class Market1501(ImageDataset):
         # 使用gdown直接从Google Drive下载
         if not osp.exists(self.dataset_dir):
             gdown.download(id=self.dataset_url, output=self.dataset_dir + '.zip', quiet=False)
+            #解压self.dataset_dir + '.zip'
+            import zipfile
+            with zipfile.ZipFile(self.dataset_dir + '.zip', 'r') as zip_ref:
+                zip_ref.extractall(self.root)
+            
         osp.splitext(self.dataset_dir + '.zip')
 
         # allow alternative directory structure
